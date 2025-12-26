@@ -1,8 +1,8 @@
 import React from 'react';
 
 const pageCoverStyle: React.CSSProperties = {
-  position: 'absolute',
-  zIndex: 3,
+  position: 'fixed',
+  zIndex: 999,
   left: 0,
   top: 0,
   right: 0,

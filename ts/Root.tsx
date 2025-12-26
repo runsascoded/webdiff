@@ -102,13 +102,13 @@ export function Root() {
           }}
           filePair={filePair}
         />
-        {showKeyboardHelp && (
-          <ShortcutsModal
-            keymap={GLOBAL_KEYMAP}
-            descriptions={SHORTCUT_DESCRIPTIONS}
-            onClose={() => setShowKeyboardHelp(false)}
-          />
-        )}
+        <ShortcutsModal
+          keymap={GLOBAL_KEYMAP}
+          descriptions={SHORTCUT_DESCRIPTIONS}
+          isOpen={showKeyboardHelp}
+          onClose={() => setShowKeyboardHelp(false)}
+          autoRegisterOpen={false}
+        />
         <Omnibar
           filePairs={pairs}
           currentIndex={idx}
