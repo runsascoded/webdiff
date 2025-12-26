@@ -108,6 +108,8 @@ export function Root() {
           isOpen={showKeyboardHelp}
           onClose={() => setShowKeyboardHelp(false)}
           autoRegisterOpen={false}
+          backdropClassName="shortcuts-backdrop"
+          modalClassName="shortcuts-modal"
         />
         <Omnibar
           filePairs={pairs}

@@ -3,6 +3,8 @@
   --bg-color: white;
   --text-color: black;
   --text-muted: #666;
+  --link-color: #0066cc;
+  --link-visited: #551a8b;
   --border-color: #ccc;
   --border-light: #ddd;
   --header-bg: white;
@@ -23,6 +25,8 @@
   --bg-color: #1a1a1a;
   --text-color: #e8e8e8;
   --text-muted: #aaa;
+  --link-color: #6cb6ff;
+  --link-visited: #c9a0dc;
   --border-color: #555;
   --border-light: #666;
   --header-bg: #222;
@@ -98,16 +102,16 @@
 }
 
 /* Dark mode code text - ensure high contrast */
-[data-theme="dark"] .diff .code {
+[data-theme="dark"] .diff td.code {
   color: var(--code-text) !important;
   background-color: var(--code-bg) !important;
 }
-[data-theme="dark"] .diff .delete .code,
-[data-theme="dark"] .diff .before.replace .code {
+[data-theme="dark"] .diff td.code.delete,
+[data-theme="dark"] .diff td.code.replace.before {
   background-color: var(--diff-delete-bg) !important;
 }
-[data-theme="dark"] .diff .insert .code,
-[data-theme="dark"] .diff .after.replace .code {
+[data-theme="dark"] .diff td.code.insert,
+[data-theme="dark"] .diff td.code.replace.after {
   background-color: var(--diff-insert-bg) !important;
 }
 
@@ -158,6 +162,13 @@
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
+}
+
+a {
+  color: var(--link-color);
+}
+a:visited {
+  color: var(--link-visited);
 }
 
 div#thediff {
@@ -496,6 +507,63 @@ kbd {
   padding: 20px;
   text-align: center;
   color: var(--text-muted);
+}
+
+/* Shortcuts Modal */
+.shortcuts-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.shortcuts-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--bg-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  z-index: 1001;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.shortcuts-modal h2,
+.shortcuts-modal h3 {
+  color: var(--text-color);
+  margin-top: 0;
+}
+
+.shortcuts-modal ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.shortcuts-modal li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.shortcuts-modal button {
+  background: var(--controls-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+.shortcuts-modal button:hover {
+  background: var(--border-color);
 }
 
 /* Floating Action Buttons */
