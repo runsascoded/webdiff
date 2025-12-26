@@ -1,5 +1,4 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import {createRoot} from 'react-dom/client';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import {injectStylesFromConfig} from './options';
 import {Root} from './Root';
@@ -13,7 +12,7 @@ const App = () => (
 );
 
 injectStylesFromConfig();
-ReactDOM.render(<App />, document.getElementById('application'));
+createRoot(document.getElementById('application')!).render(<App />);
 
 const host = window.location.host;
 const websocket = new WebSocket(`ws://${host}/ws`);

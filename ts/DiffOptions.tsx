@@ -1,10 +1,11 @@
 import React from 'react';
+import {useHotkeys} from '@rdub/use-hotkeys';
 
 import {DiffAlgorithm, gitDiffOptionsToFlags} from './diff-options';
 import {PageCover} from './codediff/PageCover';
-import {isLegitKeypress} from './file_diff';
 import {Options, UpdateOptionsFn} from './options';
 import {Unionize} from './utils';
+import {DIFF_OPTIONS_KEYMAP} from './hotkeys';
 
 export interface Props {
   options: Partial<Options>;
@@ -39,12 +40,12 @@ const popupStyle: React.CSSProperties = {
   position: 'fixed',
   zIndex: 3,
   right: 8,
-  border: '1px solid #ddd',
+  border: '1px solid var(--border-light)',
   borderRadius: 4,
   padding: 12,
   marginLeft: 8,
   marginTop: 12,
-  background: 'white',
+  background: 'var(--bg-color)',
   fontSize: '90%',
   userSelect: 'none',
   boxShadow: '0px 0px 8px 0px rgba(0,0,0,0.5)',
@@ -73,20 +74,10 @@ export function DiffOptionsControl(props: Props) {
     updateOptions({maxDiffWidth: e.currentTarget.valueAsNumber});
   };
 
-  React.useEffect(() => {
-    const handleKeydown = (e: KeyboardEvent) => {
-      if (!isLegitKeypress(e)) return;
-      if (e.code == 'KeyW') {
-        updateOptions(options => ({ignoreAllSpace: !options.ignoreAllSpace}));
-      } else if (e.code == 'KeyB') {
-        updateOptions(options => ({ignoreSpaceChange: !options.ignoreSpaceChange}));
-      }
-    };
-    document.addEventListener('keydown', handleKeydown);
-    return () => {
-      document.removeEventListener('keydown', handleKeydown);
-    };
-  }, [options, updateOptions]);
+  useHotkeys(DIFF_OPTIONS_KEYMAP, {
+    toggleIgnoreAllSpace: () => updateOptions(o => ({ignoreAllSpace: !o.ignoreAllSpace})),
+    toggleIgnoreSpaceChange: () => updateOptions(o => ({ignoreSpaceChange: !o.ignoreSpaceChange})),
+  });
 
   const diffOptsStr = gitDiffOptionsToFlags(options).join(' ');
 

@@ -1,3 +1,49 @@
+/* Theme variables */
+:root {
+  --bg-color: white;
+  --text-color: black;
+  --text-muted: #666;
+  --border-color: #ccc;
+  --border-light: #ddd;
+  --header-bg: white;
+  --controls-bg: #f7f7f7;
+  --selection-shadow: rgb(216, 225, 253);
+  --kbd-bg: rgb(246, 248, 250);
+  --kbd-text: rgb(31, 35, 40);
+  --kbd-border: rgba(175, 184, 193, 0.2);
+  --warning-bg: rgb(252, 248, 227);
+  --warning-border: rgb(245, 231, 158);
+  --warning-text: rgb(138, 109, 59);
+  --suppressed-bg: lightyellow;
+  --spark-delete: #fcc;
+  --spark-add: #cfc;
+}
+
+[data-theme="dark"] {
+  --bg-color: #1e1e1e;
+  --text-color: #d4d4d4;
+  --text-muted: #999;
+  --border-color: #444;
+  --border-light: #555;
+  --header-bg: #252526;
+  --controls-bg: #2d2d2d;
+  --selection-shadow: #3a3a5c;
+  --kbd-bg: #3c3c3c;
+  --kbd-text: #d4d4d4;
+  --kbd-border: rgba(100, 100, 100, 0.4);
+  --warning-bg: #3d3520;
+  --warning-border: #5a4a20;
+  --warning-text: #d4c090;
+  --suppressed-bg: #3d3520;
+  --spark-delete: #5a2020;
+  --spark-add: #205a20;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
 div#thediff {
     padding-right: 10px;
     max-width: 100%;
@@ -6,7 +52,7 @@ div#thediff {
 .diff-header {
     top: 0px;
     position: sticky;
-    background: white;
+    background: var(--header-bg);
     text-align: left;
     padding: 4px;
 }
@@ -28,7 +74,7 @@ div#thediff {
 
 /* It's not possible to set a border without shifting the row */
 tr.selected {
-  box-shadow: 0px -2px 0px 0px rgb(216,225,253);
+  box-shadow: 0px -2px 0px 0px var(--selection-shadow);
   z-index: 1;
   position: relative;
 }
@@ -46,7 +92,7 @@ td.code {
 
 .file-selector {
   padding-bottom: 5px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--border-color);
   margin-bottom: 15px;
 }
 
@@ -97,10 +143,10 @@ ul.file-list {
   height: 16px;
 }
 .spark .delete {
-  background: #fcc;
+  background: var(--spark-delete);
 }
 .spark .add {
-  background: #cfc;
+  background: var(--spark-add);
 }
 
 .side-a { border: 1px solid red; }
@@ -109,7 +155,7 @@ ul.file-list {
 /* Per-file type diff controls: image diff mode, JSON normalization */
 .diff-mode-controls {
   text-align: center;
-  background-color: #f7f7f7;
+  background-color: var(--controls-bg);
   padding: 5px;
 }
 .diff-mode-controls > input {
@@ -119,15 +165,15 @@ ul.file-list {
   text-decoration: none;
 }
 .diff-mode-controls a, .diff-mode-controls a:visited {
-  color: #666;
+  color: var(--text-muted);
 }
 .diff-mode-controls b {
-  color: black;
+  color: var(--text-color);
 }
 .diff-mode-controls .mode {
   padding-left: 5px;
   padding-right: 5px;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid var(--border-color);
 }
 .diff-mode-controls .mode:last-child {
   border-right: none;
@@ -183,10 +229,10 @@ table .side-a, table .side-b {
 }
 
 .no-changes {
-  background-color: rgb(252, 248, 227);
-  border: 1px solid rgb(245, 231, 158);
+  background-color: var(--warning-bg);
+  border: 1px solid var(--warning-border);
   border-radius: 4px;
-  color: rgb(138, 109, 59);
+  color: var(--warning-text);
   text-align: center;
   padding: 5px 5px;
   margin-bottom: 10px;
@@ -225,12 +271,12 @@ kbd {
   display: inline-block;
   padding: 3px 5px;
   line-height: 10px;
-  color: rgb(31, 35, 40);
+  color: var(--kbd-text);
   vertical-align: middle;
-  background-color: rgb(246, 248, 250);
-  border: solid 1px rgba(175, 184, 193, 0.2);
+  background-color: var(--kbd-bg);
+  border: solid 1px var(--kbd-border);
   border-radius: 6px;
-  box-shadow: rgba(175, 184, 193, 0.2) 0px -1px 0px 0px inset;
+  box-shadow: var(--kbd-border) 0px -1px 0px 0px inset;
 }
 
 .keyboard-shortcuts { font-size: 80%; }
@@ -249,5 +295,5 @@ kbd {
 
 .suppressed-large-diff {
   text-align: center;
-  background-color: lightyellow;
+  background-color: var(--suppressed-bg);
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import {useHotkeys} from '@rdub/use-hotkeys';
 
 import {DiffBox, ImageFilePair} from './CodeDiffContainer';
 import {PerceptualDiffMode} from './DiffView';
@@ -8,7 +9,8 @@ import {isOneSided, isSameSizeImagePair} from './utils';
 import {ImageSideBySide} from './ImageSideBySide';
 import {ImageBlinker} from './ImageBlinker';
 import {ImageOnionSkin, ImageSwipe} from './ImageSwipe';
-import {isLegitKeypress} from './file_diff';
+import {useSessionState} from './useSessionState';
+import {IMAGE_DIFF_KEYMAP} from './hotkeys';
 
 declare const HAS_IMAGE_MAGICK: boolean;
 
@@ -30,7 +32,7 @@ const PDIFF_MODES: PerceptualDiffMode[] = ['off', 'bbox', 'pixels'];
 
 /** A diff between two images. */
 export function ImageDiff(props: Props) {
-  const [shrinkToFit, setShrinkToFit] = React.useState(true);
+  const [shrinkToFit, setShrinkToFit] = useSessionState('shrinkToFit', true);
 
   const toggleShrinkToFit: React.ChangeEventHandler<HTMLInputElement> = e => {
     setShrinkToFit(e.target.checked);
@@ -78,23 +80,11 @@ export function ImageDiff(props: Props) {
     };
   }, [shrinkToFit, forceUpdate]);
 
-  // TODO: switch to useKey() or some such
-  React.useEffect(() => {
-    const handleKeydown = (e: KeyboardEvent) => {
-      if (!isLegitKeypress(e)) return;
-      if (e.code == 'KeyS') {
-        changeImageDiffMode('side-by-side');
-      } else if (e.code == 'KeyB') {
-        changeImageDiffMode('blink');
-      } else if (e.code == 'KeyP') {
-        changePDiffMode(mode => PDIFF_MODES[(PDIFF_MODES.indexOf(mode) + 1) % 3]);
-      }
-    };
-    document.addEventListener('keydown', handleKeydown);
-    return () => {
-      document.removeEventListener('keydown', handleKeydown);
-    };
-  }, [changeImageDiffMode, changePDiffMode]);
+  useHotkeys(IMAGE_DIFF_KEYMAP, {
+    sideBySide: () => changeImageDiffMode('side-by-side'),
+    blinkMode: () => changeImageDiffMode('blink'),
+    cyclePdiff: () => changePDiffMode(mode => PDIFF_MODES[(PDIFF_MODES.indexOf(mode) + 1) % 3]),
+  });
 
   const component = {
     'side-by-side': ImageSideBySide,

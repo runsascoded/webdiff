@@ -1,16 +1,18 @@
 import React from 'react';
 import {useNavigate, useParams} from 'react-router';
 import {useSearchParams} from 'react-router-dom';
+import {useHotkeys, ShortcutsModal} from '@rdub/use-hotkeys';
 import {FilePair} from './CodeDiffContainer';
 import {DiffView, PerceptualDiffMode} from './DiffView';
 import {FileSelector, FileSelectorMode} from './FileSelector';
-import {isLegitKeypress} from './file_diff';
 import {ImageDiffMode} from './ImageDiffModeSelector';
 import {filePairDisplayName} from './utils';
 import {DiffOptionsControl} from './DiffOptions';
-import {KeyboardShortcuts} from './codediff/KeyboardShortcuts';
-import {Options, encodeOptions, GitConfig, parseOptions, UpdateOptionsFn} from './options';
+import {GitConfig, useDiffOptions} from './options';
 import {NormalizeJSONOption} from './codediff/NormalizeJSONOption';
+import {useSessionState} from './useSessionState';
+import {GLOBAL_KEYMAP, SHORTCUT_DESCRIPTIONS} from './hotkeys';
+import {useTheme} from './useTheme';
 
 declare const pairs: FilePair[];
 declare const initialIdx: number;
@@ -18,8 +20,8 @@ declare const GIT_CONFIG: GitConfig;
 
 // Webdiff application root.
 export function Root() {
-  const [pdiffMode, setPDiffMode] = React.useState<PerceptualDiffMode>('off');
-  const [imageDiffMode, setImageDiffMode] = React.useState<ImageDiffMode>('side-by-side');
+  const [pdiffMode, setPDiffMode] = useSessionState<PerceptualDiffMode>('pdiffMode', 'off');
+  const [imageDiffMode, setImageDiffMode] = useSessionState<ImageDiffMode>('imageDiffMode', 'side-by-side');
   const [showKeyboardHelp, setShowKeyboardHelp] = React.useState(false);
   const [showOptions, setShowOptions] = React.useState(false);
 
@@ -28,7 +30,7 @@ export function Root() {
     pairs.length <= 6 ? 'list' : 'dropdown',
   );
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const selectIndex = React.useCallback(
     (idx: number) => {
@@ -48,54 +50,22 @@ export function Root() {
     document.title = `Diff: ${fileName} (${diffType})`;
   }, [filePair]);
 
-  const options = React.useMemo(() => parseOptions(searchParams), [searchParams]);
-  // TODO: merge defaults into options
-  const maxDiffWidth = options.maxDiffWidth ?? GIT_CONFIG.webdiff.maxDiffWidth;
-  const normalizeJSON = !!options.normalizeJSON;
+  const {options, updateOptions, maxDiffWidth, normalizeJSON} = useDiffOptions();
+  const {cycleTheme} = useTheme();
 
-  const setDiffOptions = React.useCallback(
-    (newOptions: Partial<Options>) => {
-      setSearchParams(encodeOptions(newOptions));
+  useHotkeys(GLOBAL_KEYMAP, {
+    nextFile: () => { if (idx < pairs.length - 1) selectIndex(idx + 1); },
+    prevFile: () => { if (idx > 0) selectIndex(idx - 1); },
+    toggleFileSelector: () => setFileSelectorMode(mode => mode === 'dropdown' ? 'list' : 'dropdown'),
+    showHelp: () => setShowKeyboardHelp(val => !val),
+    showOptions: () => setShowOptions(val => !val),
+    toggleNormalizeJSON: () => updateOptions(o => ({normalizeJSON: !o.normalizeJSON})),
+    cycleTheme,
+    closeModals: () => {
+      setShowKeyboardHelp(false);
+      setShowOptions(false);
     },
-    [setSearchParams],
-  );
-
-  const updateOptions = React.useCallback<UpdateOptionsFn>(
-    update => {
-      setDiffOptions({...options, ...(typeof update === 'function' ? update(options) : update)});
-    },
-    [options, setDiffOptions],
-  );
-
-  // TODO: switch to useKey() or some such
-  React.useEffect(() => {
-    const handleKeydown = (e: KeyboardEvent) => {
-      if (!isLegitKeypress(e)) return;
-      if (e.code == 'KeyK') {
-        if (idx > 0) {
-          selectIndex(idx - 1);
-        }
-      } else if (e.code == 'KeyJ') {
-        if (idx < pairs.length - 1) {
-          selectIndex(idx + 1);
-        }
-      } else if (e.code == 'KeyV') {
-        setFileSelectorMode(mode => (mode === 'dropdown' ? 'list' : 'dropdown'));
-      } else if (e.code === 'Slash' && e.shiftKey) {
-        setShowKeyboardHelp(val => !val);
-      } else if (e.code === 'Escape') {
-        setShowKeyboardHelp(false);
-      } else if (e.code === 'Period') {
-        setShowOptions(val => !val);
-      } else if (e.code === 'KeyZ') {
-        updateOptions(o => ({normalizeJSON: !o.normalizeJSON}));
-      }
-    };
-    document.addEventListener('keydown', handleKeydown);
-    return () => {
-      document.removeEventListener('keydown', handleKeydown);
-    };
-  }, [idx, selectIndex, updateOptions]);
+  });
 
   const inlineStyle = `
   td.code {
@@ -127,13 +97,13 @@ export function Root() {
           }}
           filePair={filePair}
         />
-        {showKeyboardHelp ? (
-          <KeyboardShortcuts
-            onClose={() => {
-              setShowKeyboardHelp(false);
-            }}
+        {showKeyboardHelp && (
+          <ShortcutsModal
+            keymap={GLOBAL_KEYMAP}
+            descriptions={SHORTCUT_DESCRIPTIONS}
+            onClose={() => setShowKeyboardHelp(false)}
           />
-        ) : null}
+        )}
         <DiffView
           key={`diff-${idx}`}
           thinFilePair={filePair}
@@ -142,7 +112,7 @@ export function Root() {
           diffOptions={options}
           changeImageDiffMode={setImageDiffMode}
           changePDiffMode={setPDiffMode}
-          changeDiffOptions={setDiffOptions}
+          changeDiffOptions={updateOptions}
           normalizeJSON={normalizeJSON}
         />
       </div>

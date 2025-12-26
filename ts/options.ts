@@ -1,9 +1,6 @@
-import {
-  DiffAlgorithm,
-  flagsToGitDiffOptions,
-  GitDiffOptions,
-  gitDiffOptionsToFlags,
-} from './diff-options';
+import {useCallback, useMemo} from 'react';
+import {useUrlParam, boolParam, intParam, Param} from '@rdub/use-url-params';
+import {DiffAlgorithm, GitDiffOptions} from './diff-options';
 
 /** Type of global git_config object */
 export interface GitConfig {
@@ -59,29 +56,94 @@ export interface Options extends GitDiffOptions {
   normalizeJSON: boolean;
 }
 
-export function parseOptions(query: URLSearchParams): Partial<Options> {
-  const flags = query.getAll('flag');
-  const gitDiffOptions = flagsToGitDiffOptions(flags);
-  const maxWidthStr = query.get('width');
-  const maxDiffWidth = maxWidthStr ? {maxDiffWidth: Number(maxWidthStr)} : undefined;
-  const normalizeJsonStr = query.get('normalize_json');
-  const normalizeJSON = normalizeJsonStr ? {normalizeJSON: true} : undefined;
-  return {...gitDiffOptions, ...maxDiffWidth, ...normalizeJSON};
-}
+// Custom param for DiffAlgorithm enum (null = default/myers)
+const diffAlgorithmParam: Param<DiffAlgorithm | null> = {
+  encode: (v) => (v && v !== 'myers' ? v : undefined),
+  decode: (s) => (s as DiffAlgorithm) || null,
+};
 
-export function encodeOptions(options: Partial<Options>) {
-  const {maxDiffWidth, normalizeJSON, ...diffOptions} = options;
-  const flags = gitDiffOptionsToFlags(diffOptions);
-  const params = new URLSearchParams(flags.map(f => ['flag', f]));
-  if (maxDiffWidth !== undefined && maxDiffWidth !== GIT_CONFIG.webdiff.maxDiffWidth) {
-    params.set('width', String(maxDiffWidth));
-  }
-  if (normalizeJSON) {
-    params.set('normalize_json', '1');
-  }
-  return params;
-}
+// Optional int param (null when not present)
+const optIntParam: Param<number | null> = {
+  encode: (v) => (v != null ? String(v) : undefined),
+  decode: (s) => (s != null ? Number(s) : null),
+};
 
 export type UpdateOptionsFn = (
   updater: ((oldOptions: Partial<Options>) => Partial<Options>) | Partial<Options>,
 ) => void;
+
+export function useDiffOptions(): {
+  options: Partial<Options>;
+  updateOptions: UpdateOptionsFn;
+  maxDiffWidth: number;
+  normalizeJSON: boolean;
+} {
+  // Git diff options
+  const [ignoreAllSpace, setIgnoreAllSpace] = useUrlParam('w', boolParam);
+  const [ignoreSpaceChange, setIgnoreSpaceChange] = useUrlParam('b', boolParam);
+  const [functionContext, setFunctionContext] = useUrlParam('W', boolParam);
+  const [diffAlgorithm, setDiffAlgorithm] = useUrlParam('algo', diffAlgorithmParam);
+  const [unified, setUnified] = useUrlParam('U', optIntParam);
+  const [findRenames, setFindRenames] = useUrlParam('renames', optIntParam);
+  const [findCopies, setFindCopies] = useUrlParam('copies', optIntParam);
+
+  // Additional options
+  const [maxDiffWidth, setMaxDiffWidth] = useUrlParam('width', optIntParam);
+  const [normalizeJSON, setNormalizeJSON] = useUrlParam('json', boolParam);
+
+  const effectiveMaxDiffWidth = maxDiffWidth ?? GIT_CONFIG.webdiff.maxDiffWidth;
+
+  const options = useMemo<Partial<Options>>(() => ({
+    ignoreAllSpace: ignoreAllSpace || undefined,
+    ignoreSpaceChange: ignoreSpaceChange || undefined,
+    functionContext: functionContext || undefined,
+    diffAlgorithm: diffAlgorithm || undefined,
+    unified: unified ?? undefined,
+    findRenames: findRenames ?? undefined,
+    findCopies: findCopies ?? undefined,
+    maxDiffWidth: maxDiffWidth ?? undefined,
+    normalizeJSON: normalizeJSON || undefined,
+  }), [
+    ignoreAllSpace,
+    ignoreSpaceChange,
+    functionContext,
+    diffAlgorithm,
+    unified,
+    findRenames,
+    findCopies,
+    maxDiffWidth,
+    normalizeJSON,
+  ]);
+
+  const updateOptions = useCallback<UpdateOptionsFn>((update) => {
+    const newOptions = typeof update === 'function' ? update(options) : update;
+
+    if ('ignoreAllSpace' in newOptions) setIgnoreAllSpace(!!newOptions.ignoreAllSpace);
+    if ('ignoreSpaceChange' in newOptions) setIgnoreSpaceChange(!!newOptions.ignoreSpaceChange);
+    if ('functionContext' in newOptions) setFunctionContext(!!newOptions.functionContext);
+    if ('diffAlgorithm' in newOptions) setDiffAlgorithm(newOptions.diffAlgorithm ?? null);
+    if ('unified' in newOptions) setUnified(newOptions.unified ?? null);
+    if ('findRenames' in newOptions) setFindRenames(newOptions.findRenames ?? null);
+    if ('findCopies' in newOptions) setFindCopies(newOptions.findCopies ?? null);
+    if ('maxDiffWidth' in newOptions) setMaxDiffWidth(newOptions.maxDiffWidth ?? null);
+    if ('normalizeJSON' in newOptions) setNormalizeJSON(!!newOptions.normalizeJSON);
+  }, [
+    options,
+    setIgnoreAllSpace,
+    setIgnoreSpaceChange,
+    setFunctionContext,
+    setDiffAlgorithm,
+    setUnified,
+    setFindRenames,
+    setFindCopies,
+    setMaxDiffWidth,
+    setNormalizeJSON,
+  ]);
+
+  return {
+    options,
+    updateOptions,
+    maxDiffWidth: effectiveMaxDiffWidth,
+    normalizeJSON: !!normalizeJSON,
+  };
+}

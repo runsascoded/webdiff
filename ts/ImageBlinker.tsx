@@ -1,7 +1,9 @@
 import React from 'react';
+import {useHotkeys} from '@rdub/use-hotkeys';
 import {AnnotatedImage} from './AnnotatedImage';
-import {isLegitKeypress} from './file_diff';
 import {ImageDiffProps} from './ImageDiff';
+import {useSessionState} from './useSessionState';
+import {IMAGE_BLINK_KEYMAP} from './hotkeys';
 
 /**
  * Two images on top of one another (i.e. "blinked").
@@ -9,7 +11,8 @@ import {ImageDiffProps} from './ImageDiff';
  */
 export function ImageBlinker(props: ImageDiffProps) {
   const [idx, setIdx] = React.useState(0);
-  const [autoBlink, setAutoBlink] = React.useState(true);
+  const [autoBlink, setAutoBlink] = useSessionState('autoBlink', true);
+  const [blinkInterval] = useSessionState('blinkInterval', 500);
 
   const autoblinkRef = React.createRef<HTMLInputElement>();
 
@@ -19,37 +22,23 @@ export function ImageBlinker(props: ImageDiffProps) {
     }
   };
 
-  const blink = React.useCallback(
-    (e: KeyboardEvent) => {
-      if (!isLegitKeypress(e)) {
-        return;
-      }
-      if (e.key === 'b') {
-        setAutoBlink(false);
-        setIdx(idx => 1 - idx);
-      }
+  useHotkeys(IMAGE_BLINK_KEYMAP, {
+    manualBlink: () => {
+      setAutoBlink(false);
+      setIdx(idx => 1 - idx);
     },
-    [setIdx, setAutoBlink],
-  );
-
-  // XXX old version also sets this on a[value="blink"], what is that?
-  React.useEffect(() => {
-    document.addEventListener('keydown', blink);
-    return () => {
-      document.removeEventListener('keydown', blink);
-    };
-  }, [blink]);
+  });
 
   React.useEffect(() => {
     if (autoBlink) {
       const interval = setInterval(() => {
         setIdx(idx => 1 - idx);
-      }, 500 /* ms */);
+      }, blinkInterval);
       return () => {
         clearInterval(interval);
       };
     }
-  }, [autoBlink, setIdx]);
+  }, [autoBlink, blinkInterval]);
 
   const side = idx === 0 ? 'a' : 'b';
   const maxWidth = props.shrinkToFit ? window.innerWidth - 30 : null;
