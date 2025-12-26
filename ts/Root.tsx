@@ -14,6 +14,7 @@ import {useSessionState} from './useSessionState';
 import {GLOBAL_KEYMAP, SHORTCUT_DESCRIPTIONS} from './hotkeys';
 import {useTheme} from './useTheme';
 import {Omnibar} from './Omnibar';
+import {FloatingActions} from './FloatingActions';
 
 declare const pairs: FilePair[];
 declare const initialIdx: number;
@@ -52,7 +53,7 @@ export function Root() {
   }, [filePair]);
 
   const {options, updateOptions, maxDiffWidth, normalizeJSON} = useDiffOptions();
-  const {cycleTheme} = useTheme();
+  const {theme, cycleTheme} = useTheme();
 
   // Handlers shared between useHotkeys and Omnibar
   const handlers = useMemo(() => ({
@@ -124,6 +125,11 @@ export function Root() {
           changePDiffMode={setPDiffMode}
           changeDiffOptions={updateOptions}
           normalizeJSON={normalizeJSON}
+        />
+        <FloatingActions
+          theme={theme}
+          onCycleTheme={cycleTheme}
+          onShowHelp={handlers.showHelp}
         />
       </div>
     </>
