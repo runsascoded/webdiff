@@ -69,7 +69,7 @@ export function ImageSwipe(props: ImageSwipeProps) {
       left: Math.floor(frac * imB.width),
       width: null,
       right: containerWidth - imB.width,
-      backgroundPosition: `${bgTop} px top`,
+      backgroundPosition: `${bgTop}px top`,
     });
   } else {
     _.extend(styleB, {opacity: frac});
