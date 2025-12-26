@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {useNavigate, useParams} from 'react-router';
 import {useSearchParams} from 'react-router-dom';
 import {useHotkeys, ShortcutsModal} from '@rdub/use-hotkeys';
@@ -13,6 +13,7 @@ import {NormalizeJSONOption} from './codediff/NormalizeJSONOption';
 import {useSessionState} from './useSessionState';
 import {GLOBAL_KEYMAP, SHORTCUT_DESCRIPTIONS} from './hotkeys';
 import {useTheme} from './useTheme';
+import {Omnibar} from './Omnibar';
 
 declare const pairs: FilePair[];
 declare const initialIdx: number;
@@ -53,7 +54,8 @@ export function Root() {
   const {options, updateOptions, maxDiffWidth, normalizeJSON} = useDiffOptions();
   const {cycleTheme} = useTheme();
 
-  useHotkeys(GLOBAL_KEYMAP, {
+  // Handlers shared between useHotkeys and Omnibar
+  const handlers = useMemo(() => ({
     nextFile: () => { if (idx < pairs.length - 1) selectIndex(idx + 1); },
     prevFile: () => { if (idx > 0) selectIndex(idx - 1); },
     toggleFileSelector: () => setFileSelectorMode(mode => mode === 'dropdown' ? 'list' : 'dropdown'),
@@ -65,7 +67,9 @@ export function Root() {
       setShowKeyboardHelp(false);
       setShowOptions(false);
     },
-  });
+  }), [idx, selectIndex, setFileSelectorMode, setShowKeyboardHelp, setShowOptions, updateOptions, cycleTheme]);
+
+  useHotkeys(GLOBAL_KEYMAP, handlers);
 
   const inlineStyle = `
   td.code {
@@ -104,6 +108,12 @@ export function Root() {
             onClose={() => setShowKeyboardHelp(false)}
           />
         )}
+        <Omnibar
+          filePairs={pairs}
+          currentIndex={idx}
+          onSelectFile={selectIndex}
+          handlers={handlers}
+        />
         <DiffView
           key={`diff-${idx}`}
           thinFilePair={filePair}
