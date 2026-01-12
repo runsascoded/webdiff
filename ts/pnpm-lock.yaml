@@ -33,8 +33,8 @@ importers:
         specifier: ^6.25.0
         version: 6.30.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       use-kbd:
-        specifier: github:runsascoded/use-kbd#8ee51d186234e1f5d11c7ac03d7aefb72aaba557
-        version: https://codeload.github.com/runsascoded/use-kbd/tar.gz/8ee51d186234e1f5d11c7ac03d7aefb72aaba557(react@18.3.1)
+        specifier: ^0.6.0
+        version: 0.6.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@eslint/js':
         specifier: ^9.4.0
@@ -3209,11 +3209,11 @@ packages:
   url-parse@1.5.10:
     resolution: {integrity: sha512-WypcfiRhfeUP9vvF0j6rw0J3hrWrw6iZv3+22h6iRMJ/8z1Tj6XfLP4DsUix5MhMPnXpiHDoKyoZ/bdCkwBCiQ==}
 
-  use-kbd@https://codeload.github.com/runsascoded/use-kbd/tar.gz/8ee51d186234e1f5d11c7ac03d7aefb72aaba557:
-    resolution: {tarball: https://codeload.github.com/runsascoded/use-kbd/tar.gz/8ee51d186234e1f5d11c7ac03d7aefb72aaba557}
-    version: 0.5.0-dist.37f9382
+  use-kbd@0.6.0:
+    resolution: {integrity: sha512-JxhpTqRqMiGRfe9CDw02wkZtFN3LoZNblANzbqme9q8EO9OAkJcyHeOGT1+r0AUzZTH2+g8vvKUSOcUvK/ETLg==}
     peerDependencies:
       react: '>=18.0.0'
+      react-dom: '>=18.0.0'
 
   v8-to-istanbul@9.3.0:
     resolution: {integrity: sha512-kiGUalWN+rgBJ/1OHZsBtU4rXZOfj/7rKQxULKlIzwzQSvMJUUNgPwJEEh7gU6xEVxC0ahoOBvN2YI8GH6FNgA==}
@@ -6864,9 +6864,10 @@ snapshots:
       querystringify: 2.2.0
       requires-port: 1.0.0
 
-  use-kbd@https://codeload.github.com/runsascoded/use-kbd/tar.gz/8ee51d186234e1f5d11c7ac03d7aefb72aaba557(react@18.3.1):
+  use-kbd@0.6.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   v8-to-istanbul@9.3.0:
     dependencies:
