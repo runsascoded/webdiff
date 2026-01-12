@@ -12,6 +12,8 @@ export default defineConfig({
       input: resolve(__dirname, 'index.tsx'),
       output: {
         entryFileNames: 'file_diff.js',
+        // Predictable CSS filename
+        assetFileNames: '[name][extname]',
         // Single bundle - no code splitting
         manualChunks: undefined,
         // Inline dynamic imports to keep single bundle

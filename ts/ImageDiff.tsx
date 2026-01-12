@@ -1,5 +1,5 @@
-import React from 'react';
-import {useHotkeys} from '@rdub/use-hotkeys';
+import React, {useCallback} from 'react';
+import {useAction} from 'use-kbd';
 
 import {DiffBox, ImageFilePair} from './CodeDiffContainer';
 import {PerceptualDiffMode} from './DiffView';
@@ -10,7 +10,6 @@ import {ImageSideBySide} from './ImageSideBySide';
 import {ImageBlinker} from './ImageBlinker';
 import {ImageOnionSkin, ImageSwipe} from './ImageSwipe';
 import {useSessionState} from './useSessionState';
-import {IMAGE_DIFF_KEYMAP} from './hotkeys';
 
 declare const HAS_IMAGE_MAGICK: boolean;
 
@@ -80,10 +79,27 @@ export function ImageDiff(props: Props) {
     };
   }, [shrinkToFit, forceUpdate]);
 
-  useHotkeys(IMAGE_DIFF_KEYMAP, {
-    sideBySide: () => changeImageDiffMode('side-by-side'),
-    blinkMode: () => changeImageDiffMode('blink'),
-    cyclePdiff: () => changePDiffMode(mode => PDIFF_MODES[(PDIFF_MODES.indexOf(mode) + 1) % 3]),
+  useAction('image:side-by-side', {
+    label: 'Side by side view',
+    group: 'Image',
+    defaultBindings: ['1'],
+    handler: useCallback(() => changeImageDiffMode('side-by-side'), [changeImageDiffMode]),
+  });
+
+  useAction('image:blink-mode', {
+    label: 'Blink mode',
+    group: 'Image',
+    defaultBindings: ['2'],
+    handler: useCallback(() => changeImageDiffMode('blink'), [changeImageDiffMode]),
+  });
+
+  useAction('image:cycle-pdiff', {
+    label: 'Cycle perceptual diff mode',
+    group: 'Image',
+    defaultBindings: ['p'],
+    handler: useCallback(() => {
+      changePDiffMode(mode => PDIFF_MODES[(PDIFF_MODES.indexOf(mode) + 1) % 3]);
+    }, [changePDiffMode]),
   });
 
   const component = {

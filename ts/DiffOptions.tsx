@@ -1,11 +1,10 @@
-import React from 'react';
-import {useHotkeys} from '@rdub/use-hotkeys';
+import React, {useCallback} from 'react';
+import {useAction} from 'use-kbd';
 
 import {DiffAlgorithm, gitDiffOptionsToFlags} from './diff-options';
 import {PageCover} from './codediff/PageCover';
 import {Options, UpdateOptionsFn} from './options';
 import {Unionize} from './utils';
-import {DIFF_OPTIONS_KEYMAP} from './hotkeys';
 
 export interface Props {
   options: Partial<Options>;
@@ -74,9 +73,18 @@ export function DiffOptionsControl(props: Props) {
     updateOptions({maxDiffWidth: e.currentTarget.valueAsNumber});
   };
 
-  useHotkeys(DIFF_OPTIONS_KEYMAP, {
-    toggleIgnoreAllSpace: () => updateOptions(o => ({ignoreAllSpace: !o.ignoreAllSpace})),
-    toggleIgnoreSpaceChange: () => updateOptions(o => ({ignoreSpaceChange: !o.ignoreSpaceChange})),
+  useAction('diff:toggle-ignore-all-space', {
+    label: 'Toggle ignore all space',
+    group: 'Diff',
+    defaultBindings: ['w'],
+    handler: useCallback(() => updateOptions(o => ({ignoreAllSpace: !o.ignoreAllSpace})), [updateOptions]),
+  });
+
+  useAction('diff:toggle-ignore-space-change', {
+    label: 'Toggle ignore space changes',
+    group: 'Diff',
+    defaultBindings: ['shift+w'],
+    handler: useCallback(() => updateOptions(o => ({ignoreSpaceChange: !o.ignoreSpaceChange})), [updateOptions]),
   });
 
   const diffOptsStr = gitDiffOptionsToFlags(options).join(' ');

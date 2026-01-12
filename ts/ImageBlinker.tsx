@@ -1,9 +1,8 @@
-import React from 'react';
-import {useHotkeys} from '@rdub/use-hotkeys';
+import React, {useCallback} from 'react';
+import {useAction} from 'use-kbd';
 import {AnnotatedImage} from './AnnotatedImage';
 import {ImageDiffProps} from './ImageDiff';
 import {useSessionState} from './useSessionState';
-import {IMAGE_BLINK_KEYMAP} from './hotkeys';
 
 /**
  * Two images on top of one another (i.e. "blinked").
@@ -22,11 +21,14 @@ export function ImageBlinker(props: ImageDiffProps) {
     }
   };
 
-  useHotkeys(IMAGE_BLINK_KEYMAP, {
-    manualBlink: () => {
+  useAction('image:manual-blink', {
+    label: 'Manual blink',
+    group: 'Image',
+    defaultBindings: ['b'],
+    handler: useCallback(() => {
       setAutoBlink(false);
       setIdx(idx => 1 - idx);
-    },
+    }, [setAutoBlink]),
   });
 
   React.useEffect(() => {
@@ -41,6 +43,7 @@ export function ImageBlinker(props: ImageDiffProps) {
   }, [autoBlink, blinkInterval]);
 
   const side = idx === 0 ? 'a' : 'b';
+  const label = idx === 0 ? 'Before' : 'After';
   const maxWidth = props.shrinkToFit ? window.innerWidth - 30 : null;
   return (
     <div>
@@ -51,12 +54,15 @@ export function ImageBlinker(props: ImageDiffProps) {
         checked={autoBlink}
         onChange={toggleAutoBlink}
       />
-      <label htmlFor="autoblink"> Auto-blink (hit ‘b’ to blink manually)</label>
+      <label htmlFor="autoblink"> Auto-blink (hit 'b' to blink manually)</label>
       <table id="imagediff">
         <tbody>
           <tr className="image-diff-content">
             <td>
-              <AnnotatedImage side={side} maxWidth={maxWidth} {...props} />
+              <div className="blink-label-container">
+                <span className={`blink-label blink-label-${side}`}>{label}</span>
+                <AnnotatedImage side={side} maxWidth={maxWidth} {...props} />
+              </div>
             </td>
           </tr>
         </tbody>

@@ -1,14 +1,18 @@
 import {createRoot} from 'react-dom/client';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import {HotkeysProvider} from 'use-kbd';
+import 'use-kbd/styles.css';
 import {injectStylesFromConfig} from './options';
 import {Root} from './Root';
 
 const App = () => (
-  <Router>
-    <Routes>
-      <Route path="/:index?" element={<Root />} />
-    </Routes>
-  </Router>
+  <HotkeysProvider config={{storageKey: 'webdiff-hotkeys'}}>
+    <Router>
+      <Routes>
+        <Route path="/:index?" element={<Root />} />
+      </Routes>
+    </Router>
+  </HotkeysProvider>
 );
 
 injectStylesFromConfig();

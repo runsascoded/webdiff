@@ -1,5 +1,5 @@
-import React from 'react';
-import {useHotkeys} from '@rdub/use-hotkeys';
+import React, {useCallback} from 'react';
+import {useAction} from 'use-kbd';
 
 import {DiffRange} from './codes';
 import {closest, copyOnlyMatching, distributeSpans} from './dom-utils';
@@ -8,7 +8,6 @@ import {DiffRow} from './DiffRow';
 import {SkipRange, SkipRow} from './SkipRow';
 import {FilePair} from '../CodeDiffContainer';
 import {GitConfig} from '../options';
-import {CODE_DIFF_KEYMAP} from '../hotkeys';
 
 export interface PatchOptions {
   /** Minimum number of skipped lines to elide into a "jump" row */
@@ -232,15 +231,24 @@ const CodeDiffView = React.memo((props: CodeDiffViewProps) => {
     );
   };
 
-  useHotkeys(CODE_DIFF_KEYMAP, {
-    nextHunk: () => {
+  useAction('diff:next-hunk', {
+    label: 'Next hunk',
+    group: 'Code',
+    defaultBindings: ['n'],
+    handler: useCallback(() => {
       const newLine = moveUpDown('up', selectedLine, ops);
       if (newLine !== undefined) setSelectedLine(newLine);
-    },
-    prevHunk: () => {
+    }, [selectedLine, ops]),
+  });
+
+  useAction('diff:prev-hunk', {
+    label: 'Previous hunk',
+    group: 'Code',
+    defaultBindings: ['shift+n'],
+    handler: useCallback(() => {
       const newLine = moveUpDown('down', selectedLine, ops);
       if (newLine !== undefined) setSelectedLine(newLine);
-    },
+    }, [selectedLine, ops]),
   });
 
   const diffRows = [];
