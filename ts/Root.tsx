@@ -184,6 +184,7 @@ export function Root() {
           theme={theme}
           onCycleTheme={cycleTheme}
           onShowHelp={openModal}
+          onShowSettings={() => setShowOptions(true)}
         />
       </div>
     </>

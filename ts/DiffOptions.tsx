@@ -14,18 +14,6 @@ export interface Props {
   setIsVisible: (isVisible: boolean) => void;
 }
 
-const gearStyle: React.CSSProperties = {
-  position: 'sticky',
-  float: 'right',
-  marginTop: -10,
-  zIndex: 1,
-  top: 0,
-  border: 0,
-  fontSize: 'large',
-  background: 'transparent',
-  cursor: 'pointer',
-};
-
 const closeButtonStyle: React.CSSProperties = {
   position: 'absolute',
   right: 0,
@@ -37,18 +25,15 @@ const closeButtonStyle: React.CSSProperties = {
 
 const popupStyle: React.CSSProperties = {
   position: 'fixed',
-  zIndex: 3,
-  right: 8,
+  zIndex: 1000,
+  right: 76,
+  bottom: 24,
   border: '1px solid var(--border-light)',
-  borderRadius: 4,
-  padding: 12,
-  marginLeft: 8,
-  marginTop: 12,
+  borderRadius: 6,
+  padding: 16,
   background: 'var(--bg-color)',
-  fontSize: '90%',
   userSelect: 'none',
-  boxShadow: '0px 0px 8px 0px rgba(0,0,0,0.5)',
-  fontFamily: 'sans-serif',
+  boxShadow: '0px 0px 12px 0px rgba(0,0,0,0.3)',
 };
 
 type BooleanOptions = Extract<Unionize<Options>, {v: boolean}>['k'];
@@ -89,122 +74,116 @@ export function DiffOptionsControl(props: Props) {
 
   const diffOptsStr = gitDiffOptionsToFlags(options).join(' ');
 
+  if (!isVisible) return null;
+
   return (
     <>
-      <button style={gearStyle} onClick={togglePopup}>
-        ⚙
-      </button>
-      {isVisible ? (
-        <>
-          <PageCover onClick={togglePopup} />
-          <div style={popupStyle}>
-            <button style={closeButtonStyle} onClick={togglePopup}>
-              ✕
-            </button>
-            <table>
-              <tbody>
-                <tr>
-                  <td style={{textAlign: 'right', verticalAlign: 'top'}} rowSpan={3}>
-                    Whitespace:
-                  </td>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={!!options.ignoreAllSpace}
-                      id="ignore-all-space"
-                      onChange={toggleField('ignoreAllSpace')}
-                    />{' '}
-                    <label htmlFor="ignore-all-space">
-                      Ignore All Space (<code>git diff -w</code>)
-                    </label>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={!!options.ignoreSpaceChange}
-                      id="ignore-space-changes"
-                      onChange={toggleField('ignoreSpaceChange')}
-                    />{' '}
-                    <label htmlFor="ignore-space-changes">
-                      Ignore Space Changes (<code>git diff -b</code>)
-                    </label>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={!!options.normalizeJSON}
-                      id="normalize-json"
-                      onChange={toggleField('normalizeJSON')}
-                    />{' '}
-                    <label htmlFor="normalize-json">Normalize JSON</label>
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{textAlign: 'right', verticalAlign: 'top'}} rowSpan={2}>
-                    Context:
-                  </td>
-                  <td>
-                    <input
-                      type="number"
-                      min={1}
-                      max={100}
-                      value={options.unified ?? 8}
-                      onChange={setUnifiedContext}
-                    />{' '}
-                    lines
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={!!options.functionContext}
-                      id="function-context"
-                      onChange={toggleField('functionContext')}
-                    />{' '}
-                    <label htmlFor="function-context">
-                      Function Context (<code>git diff -W</code>)
-                    </label>
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{textAlign: 'right'}}>Diff Algorithm:</td>
-                  <td>
-                    <select value={options.diffAlgorithm ?? 'myers'} onChange={changeDiffAlgorithm}>
-                      <option value="myers">Myers (Default)</option>
-                      <option value="patience">Patience</option>
-                      <option value="minimal">Minimal</option>
-                      <option value="histogram">Histogram</option>
-                    </select>
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{textAlign: 'right', verticalAlign: 'top'}}>Max line width:</td>
-                  <td>
-                    <input
-                      type="number"
-                      min={1}
-                      max={1000}
-                      value={maxDiffWidth}
-                      onChange={changeMaxDiffWidth}
-                    />{' '}
-                    lines
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            {diffOptsStr ? <pre>git diff {diffOptsStr}</pre> : null}
-            {maxDiffWidth !== props.defaultMaxDiffWidth ? (
-              <pre>git config webdiff.maxDiffWidth {maxDiffWidth}</pre>
-            ) : null}
-          </div>
-        </>
-      ) : null}
+      <PageCover onClick={togglePopup} />
+      <div style={popupStyle}>
+        <button style={closeButtonStyle} onClick={togglePopup}>
+          ✕
+        </button>
+        <table>
+          <tbody>
+            <tr>
+              <td style={{textAlign: 'right', verticalAlign: 'top'}} rowSpan={3}>
+                Whitespace:
+              </td>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={!!options.ignoreAllSpace}
+                  id="ignore-all-space"
+                  onChange={toggleField('ignoreAllSpace')}
+                />{' '}
+                <label htmlFor="ignore-all-space">
+                  Ignore All Space (<code>git diff -w</code>)
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={!!options.ignoreSpaceChange}
+                  id="ignore-space-changes"
+                  onChange={toggleField('ignoreSpaceChange')}
+                />{' '}
+                <label htmlFor="ignore-space-changes">
+                  Ignore Space Changes (<code>git diff -b</code>)
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={!!options.normalizeJSON}
+                  id="normalize-json"
+                  onChange={toggleField('normalizeJSON')}
+                />{' '}
+                <label htmlFor="normalize-json">Normalize JSON</label>
+              </td>
+            </tr>
+            <tr>
+              <td style={{textAlign: 'right', verticalAlign: 'top'}} rowSpan={2}>
+                Context:
+              </td>
+              <td>
+                <input
+                  type="number"
+                  min={1}
+                  max={100}
+                  value={options.unified ?? 8}
+                  onChange={setUnifiedContext}
+                />{' '}
+                lines
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={!!options.functionContext}
+                  id="function-context"
+                  onChange={toggleField('functionContext')}
+                />{' '}
+                <label htmlFor="function-context">
+                  Function Context (<code>git diff -W</code>)
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td style={{textAlign: 'right'}}>Diff Algorithm:</td>
+              <td>
+                <select value={options.diffAlgorithm ?? 'myers'} onChange={changeDiffAlgorithm}>
+                  <option value="myers">Myers (Default)</option>
+                  <option value="patience">Patience</option>
+                  <option value="minimal">Minimal</option>
+                  <option value="histogram">Histogram</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td style={{textAlign: 'right', verticalAlign: 'top'}}>Max line width:</td>
+              <td>
+                <input
+                  type="number"
+                  min={1}
+                  max={1000}
+                  value={maxDiffWidth}
+                  onChange={changeMaxDiffWidth}
+                />{' '}
+                lines
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        {diffOptsStr ? <pre>git diff {diffOptsStr}</pre> : null}
+        {maxDiffWidth !== props.defaultMaxDiffWidth ? (
+          <pre>git config webdiff.maxDiffWidth {maxDiffWidth}</pre>
+        ) : null}
+      </div>
     </>
   );
 }
