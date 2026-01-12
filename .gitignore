@@ -1,0 +1,4 @@
+# Build outputs (committed to dist branch by CI)
+webdiff/static/js/file_diff.js
+webdiff/static/js/file_diff.js.map
+webdiff/static/js/index.css

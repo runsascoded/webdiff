@@ -13,9 +13,20 @@ export function FileModeSelector(props: Props) {
     props.changeHandler(newMode);
   };
 
+  const isExpanded = props.mode === 'list';
+  const title = isExpanded ? 'Collapse file list' : 'Expand file list';
+
   return (
-    <div className="file-mode-toggle" onClick={handleChange}>
-      <div className="arrow-holder">{props.mode == 'dropdown' ? '»' : '«'}</div>
+    <div className="file-mode-toggle" onClick={handleChange} title={title}>
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="currentColor"
+        style={{transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s ease'}}
+      >
+        <path d="M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z" />
+      </svg>
     </div>
   );
 }

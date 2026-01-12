@@ -1,57 +1,66 @@
 /* Theme variables */
 :root {
-  --bg-color: white;
-  --text-color: black;
-  --text-muted: #666;
-  --link-color: #0066cc;
-  --link-visited: #551a8b;
-  --border-color: #ccc;
-  --border-light: #ddd;
-  --header-bg: white;
-  --controls-bg: #f7f7f7;
-  --selection-shadow: rgb(216, 225, 253);
-  --kbd-bg: rgb(246, 248, 250);
-  --kbd-text: rgb(31, 35, 40);
+  --bg-color: #fafafa;
+  --text-color: #24292f;
+  --text-muted: #656d76;
+  --link-color: #0969da;
+  --link-visited: #8250df;
+  --border-color: #d0d7de;
+  --border-light: #e8e8e8;
+  --header-bg: #ffffff;
+  --controls-bg: #f6f8fa;
+  --selection-shadow: #ddf4ff;
+  --kbd-bg: #f6f8fa;
+  --kbd-text: #24292f;
   --kbd-border: rgba(175, 184, 193, 0.2);
-  --warning-bg: rgb(252, 248, 227);
-  --warning-border: rgb(245, 231, 158);
-  --warning-text: rgb(138, 109, 59);
-  --suppressed-bg: lightyellow;
-  --spark-delete: #fcc;
-  --spark-add: #cfc;
+  --warning-bg: #fff8c5;
+  --warning-border: #d4a72c;
+  --warning-text: #9a6700;
+  --suppressed-bg: #fff8c5;
+  --spark-delete: #ffcecb;
+  --spark-add: #ccffd8;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.1);
+  --transition-fast: 0.15s ease;
 }
 
 [data-theme="dark"] {
-  --bg-color: #1a1a1a;
-  --text-color: #e8e8e8;
-  --text-muted: #aaa;
-  --link-color: #6cb6ff;
-  --link-visited: #c9a0dc;
-  --border-color: #555;
-  --border-light: #666;
-  --header-bg: #222;
-  --controls-bg: #2a2a2a;
-  --selection-shadow: #4a4a7c;
-  --kbd-bg: #3c3c3c;
-  --kbd-text: #e8e8e8;
-  --kbd-border: rgba(120, 120, 120, 0.5);
-  --warning-bg: #3d3520;
-  --warning-border: #5a4a20;
-  --warning-text: #e0d0a0;
-  --suppressed-bg: #3d3520;
-  --spark-delete: #6a3030;
-  --spark-add: #306a30;
+  --bg-color: #0d1117;
+  --text-color: #e6edf3;
+  --text-muted: #8b949e;
+  --link-color: #58a6ff;
+  --link-visited: #bc8cff;
+  --border-color: #30363d;
+  --border-light: #21262d;
+  --header-bg: #161b22;
+  --controls-bg: #161b22;
+  --selection-shadow: #388bfd33;
+  --kbd-bg: #21262d;
+  --kbd-text: #e6edf3;
+  --kbd-border: rgba(110, 118, 129, 0.4);
+  --warning-bg: #341a00;
+  --warning-border: #9e6a03;
+  --warning-text: #f0c14b;
+  --suppressed-bg: #341a00;
+  --spark-delete: #67262b;
+  --spark-add: #26663c;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.4);
   /* Diff-specific dark colors - higher contrast */
-  --line-no-bg: #252525;
-  --line-no-text: #999;
+  --line-no-bg: #161b22;
+  --line-no-text: #8b949e;
   --diff-delete-bg: #3c1f1f;
   --diff-insert-bg: #1f3c1f;
   --char-delete-bg: #6a2a2a;
   --char-insert-bg: #2a6a2a;
-  --skip-bg: #222;
+  --skip-bg: #161b22;
   /* Code text colors for dark mode */
-  --code-text: #e8e8e8;
-  --code-bg: #1a1a1a;
+  --code-text: #e6edf3;
+  --code-bg: #0d1117;
 }
 
 /* Dark mode overrides for codediff */
@@ -159,44 +168,76 @@
   color: #e06c75 !important;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  padding: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
   color: var(--link-color);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+a:hover {
+  text-decoration: underline;
 }
 a:visited {
   color: var(--link-visited);
 }
 
 div#thediff {
-    padding-right: 10px;
-    max-width: 100%;
+  padding-right: 10px;
+  max-width: 100%;
 }
 
 .diff-header {
-    top: 0px;
-    position: sticky;
-    background: var(--header-bg);
-    text-align: left;
-    padding: 4px;
+  top: 0px;
+  position: sticky;
+  background: var(--header-bg);
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+  z-index: 10;
 }
 .diff-header .num-add, .diff-header .num-delete {
-  font-weight: normal;
-  font-size: small;
+  font-weight: 500;
+  font-size: 13px;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  margin-left: 8px;
 }
 .diff-header .num-add {
-  color: green;
+  color: #1a7f37;
+  background-color: #dafbe1;
 }
 .diff-header .num-delete {
-  color: red;
+  color: #cf222e;
+  background-color: #ffebe9;
+}
+[data-theme="dark"] .diff-header .num-add {
+  color: #3fb950;
+  background-color: #23312c;
+}
+[data-theme="dark"] .diff-header .num-delete {
+  color: #f85149;
+  background-color: #3d2326;
 }
 
 .diff .line-no, .diff .code {
-    font-family: Inconsolata, Consolas, "Liberation Mono", Menlo, Courier, monospace;
-    font-size: 13px;
+  font-family: var(--font-mono);
+  font-size: 13px;
 }
 
 /* It's not possible to set a border without shifting the row */
@@ -218,31 +259,72 @@ td.code {
 }
 
 .file-selector {
-  padding-bottom: 5px;
-  border-bottom: 1px solid var(--border-color);
-  margin-bottom: 15px;
+  padding: 12px 16px;
+  background: var(--header-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+
+.file-selector > .file-mode-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
 }
 
 ul.file-list {
   padding: 0;
+  margin: 0;
 }
 .file-list li {
   list-style-type: none;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 2px;
+  transition: background-color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.file-list li:hover {
+  background-color: var(--controls-bg);
+}
+.file-list li a,
+.file-list li b {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .file-mode-toggle {
-  position: absolute;
-  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  width: 20px;
-  height: 10px;
-  overflow: hidden;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--controls-bg);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.file-mode-toggle:hover {
+  background: var(--border-light);
+  border-color: var(--text-muted);
 }
 
 .arrow-holder {
-  font-size: 20px;
-  line-height: 20px;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--text-muted);
   transform: rotate(90deg);
+  font-weight: bold;
 }
 
 .file-list .diff {
@@ -260,20 +342,25 @@ ul.file-list {
 .diff.move   { background-position: 0 -48px; }
 
 .spark {
-  display: inline-block;
-  width: 32px;
-  height: 16px;
-  margin-right: 4px;
+  display: flex;
+  width: 48px;
+  height: 12px;
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--border-light);
 }
 .spark .delete, .spark .add {
-  display: inline-block;
-  height: 16px;
+  height: 100%;
 }
 .spark .delete {
-  background: var(--spark-delete);
+  background: #f85149;
 }
 .spark .add {
-  background: var(--spark-add);
+  background: #3fb950;
+}
+[data-theme="dark"] .spark {
+  background: var(--border-color);
 }
 
 .side-a { border: 1px solid red; }
@@ -283,19 +370,37 @@ ul.file-list {
 .diff-mode-controls {
   text-align: center;
   background-color: var(--controls-bg);
-  padding: 5px;
+  padding: 10px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 .diff-mode-controls > input {
-  margin-left: 20px;
+  margin-left: 12px;
 }
 .diff-mode-controls a {
   text-decoration: none;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
 }
 .diff-mode-controls a, .diff-mode-controls a:visited {
   color: var(--text-muted);
 }
+.diff-mode-controls a:hover {
+  background-color: var(--border-light);
+  text-decoration: none;
+}
 .diff-mode-controls b {
   color: var(--text-color);
+  background-color: var(--selection-shadow);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
 }
 .diff-mode-controls .mode {
   padding-left: 5px;
@@ -304,6 +409,10 @@ ul.file-list {
 }
 .diff-mode-controls .mode:last-child {
   border-right: none;
+}
+.diff-mode-controls label {
+  cursor: pointer;
+  user-select: none;
 }
 
 .overlapping-images {
@@ -358,11 +467,12 @@ table .side-a, table .side-b {
 .no-changes {
   background-color: var(--warning-bg);
   border: 1px solid var(--warning-border);
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   color: var(--warning-text);
   text-align: center;
-  padding: 5px 5px;
-  margin-bottom: 10px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  font-weight: 500;
 }
 
 .image-diff .no-changes {
@@ -396,28 +506,36 @@ table .side-a, table .side-b {
 /* Cribbed from GitHub */
 kbd {
   display: inline-block;
-  padding: 3px 5px;
-  line-height: 10px;
+  padding: 4px 6px;
+  line-height: 1;
+  font-family: var(--font-mono);
+  font-size: 11px;
   color: var(--kbd-text);
   vertical-align: middle;
   background-color: var(--kbd-bg);
   border: solid 1px var(--kbd-border);
-  border-radius: 6px;
-  box-shadow: var(--kbd-border) 0px -1px 0px 0px inset;
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 -1px 0 var(--kbd-border);
 }
 
-.keyboard-shortcuts { font-size: 80%; }
+.keyboard-shortcuts {
+  font-size: 14px;
+}
 
 .keyboard-shortcuts .header {
-  font-weight: bold;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 
 .keyboard-shortcuts ul {
-  padding-left: 0;  /* 1em; */
+  padding-left: 0;
 }
 .keyboard-shortcuts li {
   list-style-type: none;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .suppressed-large-diff {
@@ -425,14 +543,21 @@ kbd {
   background-color: var(--suppressed-bg);
 }
 
+/* Custom checkbox styling */
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--link-color);
+  cursor: pointer;
+}
+
 /* Floating Action Buttons */
 .floating-actions {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 24px;
+  right: 24px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   z-index: 100;
 }
 
@@ -440,26 +565,28 @@ kbd {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: var(--controls-bg);
+  background: var(--header-bg);
   border: 1px solid var(--border-color);
   color: var(--text-color);
   cursor: pointer;
   text-decoration: none;
-  font-size: 16px;
-  transition: transform 0.15s, box-shadow 0.15s;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  font-size: 18px;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-md);
 }
 
 .fab:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+  background: var(--controls-bg);
 }
 
 .fab:active {
-  transform: scale(0.95);
+  transform: translateY(0);
 }
 
 .fab svg {

@@ -31,6 +31,15 @@ export function ImageBlinker(props: ImageDiffProps) {
     }, [setAutoBlink]),
   });
 
+  useAction('image:toggle-auto-blink', {
+    label: 'Toggle auto-blink',
+    group: 'Image',
+    defaultBindings: ['B'],
+    handler: useCallback(() => {
+      setAutoBlink(prev => !prev);
+    }, [setAutoBlink]),
+  });
+
   React.useEffect(() => {
     if (autoBlink) {
       const interval = setInterval(() => {
