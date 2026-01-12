@@ -166,7 +166,7 @@ export function Root() {
           }}
           filePair={filePair}
         />
-        <ShortcutsModal />
+        <ShortcutsModal editable />
         <Omnibar placeholder="Search files or actions..." />
         <SequenceModal />
         <DiffView
