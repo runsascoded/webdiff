@@ -15,7 +15,10 @@ Features include:
 * Runs in the browser of your choice on any platform.
 * Syntax highlighting via highlight.js
 * Step back and forth through multiple files in a single diff
-* Rich support for image diffs
+* Rich support for image diffs (side-by-side, blink, onion skin, swipe)
+* Keyboard shortcuts for fast navigation (press `?` to see all)
+* Command palette / omnibar (`⌘K` / `Ctrl+K`)
+* Light/dark/system theme support (`t` to cycle)
 
 <!-- These are absolute URLs so that they display on pypi.org -->
 <!-- This is `git webdiff 05157bba^..05157bba`, in this repo -->
@@ -37,6 +40,16 @@ or, if you prefer [Homebrew]:
     brew install danvk/webdiff/webdiff
 
 (the latter will also install [ImageMagick] as a recommended dependency.)
+
+### Installing from GitHub (runsascoded fork)
+
+To install the latest development version with new features (dark mode, hotkeys, omnibar):
+
+    pip install git+https://github.com/runsascoded/webdiff@dist
+
+The `dist` branch contains pre-built frontend assets. You can also pin to a specific build:
+
+    pip install git+https://github.com/runsascoded/webdiff@dist-<sha>
 
 ## Usage
 
@@ -107,12 +120,37 @@ Options are:
 | webdiff.colors.charDelete | #fcc | CSS background color for deleted characters in a delete (left) line |
 | webdiff.colors.charInsert | #cfc | CSS background color for inserted characters in an insert (right) line |
 
+## Keyboard Shortcuts
+
+Press `?` to see all keyboard shortcuts. Key bindings include:
+
+| Key | Action |
+| --- | ------ |
+| `j` / `k` | Next / previous file |
+| `n` / `N` | Next / previous hunk |
+| `⌘K` | Open command palette (search files and actions) |
+| `?` | Show keyboard shortcuts |
+| `t` | Cycle theme (light → dark → system) |
+| `v` | Toggle file list / dropdown |
+| `.` | Show diff options |
+| `z` | Toggle JSON normalization |
+| `w` / `W` | Toggle ignore whitespace options |
+| `1` / `2` | Image diff: side-by-side / blink mode |
+| `b` | Image diff: manual blink |
+| `p` | Image diff: cycle perceptual diff mode |
+
+Bindings can be customized in the shortcuts modal (`?`).
+
 ## Development
 
     poetry install
     cd ts
-    yarn
-    yarn build
+    pnpm install
+    pnpm build
+
+For live reloading during frontend development:
+
+    pnpm dev  # watches and rebuilds on changes
 
 Then from the root directory:
 
@@ -132,7 +170,7 @@ To format the code, run:
 
     poetry run ruff format
     cd ts
-    yarn prettier
+    pnpm format
 
 To debug `git webdiff`, run:
 
