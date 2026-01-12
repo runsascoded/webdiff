@@ -45,6 +45,6 @@
     "react-dom": "^18.3.1",
     "react-router": "^6.25.0",
     "react-router-dom": "^6.25.0",
-    "use-kbd": "^0.5.0"
+    "use-kbd": "github:runsascoded/use-kbd#8ee51d186234e1f5d11c7ac03d7aefb72aaba557"
   }
 }
