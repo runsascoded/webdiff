@@ -312,11 +312,19 @@ ul.file-list {
   border: 1px solid var(--border-color);
   transition: all var(--transition-fast);
   flex-shrink: 0;
+  color: var(--text-muted);
+  text-decoration: none;
 }
 
 .file-mode-toggle:hover {
   background: var(--border-light);
   border-color: var(--text-muted);
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+.file-mode-toggle:visited {
+  color: var(--text-muted);
 }
 
 .arrow-holder {

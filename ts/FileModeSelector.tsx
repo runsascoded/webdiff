@@ -17,7 +17,15 @@ export function FileModeSelector(props: Props) {
   const title = isExpanded ? 'Collapse file list' : 'Expand file list';
 
   return (
-    <div className="file-mode-toggle" onClick={handleChange} title={title}>
+    <a
+      href="#"
+      className="file-mode-toggle"
+      onClick={e => {
+        e.preventDefault();
+        handleChange();
+      }}
+      title={title}
+    >
       <svg
         width="16"
         height="16"
@@ -27,6 +35,6 @@ export function FileModeSelector(props: Props) {
       >
         <path d="M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z" />
       </svg>
-    </div>
+    </a>
   );
 }
