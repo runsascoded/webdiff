@@ -21,8 +21,6 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Topic :: Software Development :: Version Control"
 ]
-# These are generated, so they're in .gitignore. But we need to package them.
-include = ["webdiff/static/js/file_diff.js", "webdiff/static/js/index.css"]
 
 [tool.poetry.dependencies]
 python = "^3.10"

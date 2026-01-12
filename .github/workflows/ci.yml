@@ -87,10 +87,10 @@ jobs:
           SOURCE_SHA=$(git rev-parse HEAD)
           SOURCE_MSG=$(git log -1 --pretty=%B)
 
-          # Force add the built files (they're in .gitignore)
-          git add -f webdiff/static/js/file_diff.js
-          git add -f webdiff/static/js/file_diff.js.map
-          git add -f webdiff/static/js/index.css
+          # Add the built files
+          git add webdiff/static/js/file_diff.js
+          git add webdiff/static/js/file_diff.js.map
+          git add webdiff/static/js/index.css
 
           # Create a commit with the built files
           git commit -m "Build from ${SOURCE_SHA::8}

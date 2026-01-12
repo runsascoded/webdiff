@@ -22,7 +22,7 @@ export function ImageBlinker(props: ImageDiffProps) {
   };
 
   useAction('image:manual-blink', {
-    label: 'Manual blink',
+    label: 'Toggle before/after',
     group: 'Image',
     defaultBindings: ['b'],
     handler: useCallback(() => {

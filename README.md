@@ -135,8 +135,8 @@ Press `?` to see all keyboard shortcuts. Key bindings include:
 | `.` | Show diff options |
 | `z` | Toggle JSON normalization |
 | `w` / `W` | Toggle ignore whitespace options |
-| `1` / `2` | Image diff: side-by-side / blink mode |
-| `b` | Image diff: manual blink |
+| `s` / `b` | Image diff: side-by-side / blink mode |
+| `b` | Image diff: toggle before/after (when in blink mode) |
 | `p` | Image diff: cycle perceptual diff mode |
 
 Bindings can be customized in the shortcuts modal (`?`).
