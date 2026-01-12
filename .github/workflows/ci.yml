@@ -1,0 +1,107 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install frontend dependencies
+        working-directory: ts
+        run: pnpm install
+
+      - name: Build frontend
+        working-directory: ts
+        run: pnpm build
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Build package
+        run: poetry build
+
+      - name: Upload wheel
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  push-dist:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install frontend dependencies
+        working-directory: ts
+        run: pnpm install
+
+      - name: Build frontend
+        working-directory: ts
+        run: pnpm build
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit built files to dist branch
+        run: |
+          # Get current commit info
+          SOURCE_SHA=$(git rev-parse HEAD)
+          SOURCE_MSG=$(git log -1 --pretty=%B)
+
+          # Force add the built files (they're in .gitignore)
+          git add -f webdiff/static/js/file_diff.js
+          git add -f webdiff/static/js/file_diff.js.map
+          git add -f webdiff/static/js/index.css
+
+          # Create a commit with the built files
+          git commit -m "Build from ${SOURCE_SHA::8}
+
+          Source commit: $SOURCE_SHA
+          $SOURCE_MSG"
+
+          # Force push to dist branch
+          git push -f origin HEAD:dist
+
+      - name: Also push to dist-sha branch for pinning
+        run: |
+          SOURCE_SHA=$(git rev-parse HEAD~1)  # The original source commit
+          git push -f origin HEAD:dist-${SOURCE_SHA::8}
