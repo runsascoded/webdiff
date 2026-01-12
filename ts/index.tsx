@@ -6,7 +6,7 @@ import {injectStylesFromConfig} from './options';
 import {Root} from './Root';
 
 const App = () => (
-  <HotkeysProvider config={{storageKey: 'webdiff-hotkeys'}}>
+  <HotkeysProvider config={{storageKey: 'webdiff-hotkeys', disableConflicts: false}}>
     <Router>
       <Routes>
         <Route path="/:index?" element={<Root />} />

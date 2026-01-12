@@ -86,12 +86,13 @@ export function ImageDiff(props: Props) {
     handler: useCallback(() => changeImageDiffMode('side-by-side'), [changeImageDiffMode]),
   });
 
+  const notInBlinkMode = imageDiffMode !== 'blink';
   useAction('image:blink-mode', {
     label: 'Blink mode',
     group: 'Image',
-    defaultBindings: ['b'],
+    defaultBindings: notInBlinkMode ? ['b'] : [],  // No binding when in blink mode to avoid conflict
     handler: useCallback(() => changeImageDiffMode('blink'), [changeImageDiffMode]),
-    enabled: imageDiffMode !== 'blink',  // Only active when not already in blink mode
+    enabled: notInBlinkMode,
   });
 
   useAction('image:cycle-pdiff', {
