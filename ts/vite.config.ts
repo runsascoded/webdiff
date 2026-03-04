@@ -4,6 +4,7 @@ import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [react()],
+
   build: {
     outDir: resolve(__dirname, '../webdiff/static/js'),
     emptyOutDir: false,
